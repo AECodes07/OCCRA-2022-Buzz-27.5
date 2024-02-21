@@ -1,0 +1,98 @@
+#region VEXcode Generated Robot Configuration
+from vex import *
+import urandom
+
+# Brain should be defined by default
+brain=Brain()
+
+# Robot configuration code
+
+
+# wait for rotation sensor to fully initialize
+wait(30, MSEC)
+#endregion VEXcode Generated Robot Configuration
+
+# ------------------------------------------
+# 
+# 	Project:      Buzz 27.5 OCCRA robot
+#	Author:       Ethan Dhomnic, reused 2021 code portion by Michael Chen
+#	Created:      
+#	Description:  VEXcode V5 Python Project for the 2022 OCCRA competition
+# 
+# ------------------------------------------
+# Library imports
+from vex import *
+
+# Robot configuration code
+expander_1 = Triport(Ports.PORT1)
+controller_1 = Controller(PRIMARY)
+controller_2 = Controller(PARTNER)
+driveLF = Motor29(brain.three_wire_port.a, False)
+driveLR = Motor29(brain.three_wire_port.b, False)
+driveRF = Motor29(brain.three_wire_port.c, True)
+driveRR = Motor29(brain.three_wire_port.d, True)
+elevator = Motor29(brain.three_wire_port.e, True) 
+intake = Motor29(brain.three_wire_port.g, True)
+intake_top = Motor29(brain.three_wire_port.h, True)
+climber = Motor29(brain.three_wire_port.f, True)  
+
+# Intake velocity and motor directional controls
+while (True):
+
+    intake.set_velocity(50, PERCENT)
+    if controller_1.buttonL1.pressing():
+        intake.spin(REVERSE)
+    elif controller_1.buttonL2.pressing():
+        intake.set_velocity(35, PERCENT)
+        intake.spin(FORWARD)
+    else: intake.stop()
+    
+    if controller_1.buttonR1.pressing():
+        intake_top.set_velocity(100, PERCENT)
+        intake_top.spin(REVERSE)
+    elif controller_1.buttonR2.pressing():
+        intake_top.set_velocity(50, PERCENT)
+        intake_top.spin(FORWARD)
+    else: intake_top.stop()
+
+# Elevator velocity and motor directional controls (with slower elevator velocity)
+
+    if controller_2.buttonR1.pressing():
+        elevator.set_velocity(75, PERCENT)
+        elevator.spin(REVERSE)
+    elif controller_2.buttonR2.pressing():
+         elevator.set_velocity(100, PERCENT)
+         elevator.spin(FORWARD)
+    elif controller_2.buttonL1.pressing():
+        elevator.set_velocity(38, PERCENT)
+        elevator.spin(REVERSE)
+    elif controller_2.buttonL2.pressing():
+        elevator.set_velocity(50, PERCENT)
+        elevator.spin(FORWARD)  
+    else: elevator.stop()
+        
+# Climber velocity and motor directional controls 
+
+    climber.set_velocity(100, PERCENT)
+    if controller_2.buttonX.pressing():
+        climber.spin(FORWARD)
+    elif controller_2.buttonB.pressing():
+        climber.spin(REVERSE)
+    else: climber.stop()
+
+    # For drive controls
+    steer = controller_1.axis1.position()
+    if(steer > 55):
+        steer = 55
+
+    left = controller_1.axis3.position() + steer
+    right = controller_1.axis3.position() - steer
+    driveLF.set_velocity(left, PERCENT)
+    driveLR.set_velocity(left, PERCENT)
+    driveRF.set_velocity(right, PERCENT)
+    driveRR.set_velocity(right, PERCENT)
+    driveLF.spin(FORWARD)
+    driveLR.spin(FORWARD)
+    driveRF.spin(FORWARD)
+    driveRR.spin(FORWARD)
+    
